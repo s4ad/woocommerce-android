@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.woocommerce.android.NavGraphProductsDirections
 import com.woocommerce.android.RequestCodes
 import com.woocommerce.android.extensions.navigateSafely
+import com.woocommerce.android.ui.products.ProductType
 import com.woocommerce.android.ui.products.variations.VariationNavigationTarget.ViewAttributes
 import com.woocommerce.android.ui.products.variations.VariationNavigationTarget.ViewDescriptionEditor
 import com.woocommerce.android.ui.products.variations.VariationNavigationTarget.ViewImageGallery
@@ -56,7 +57,8 @@ class VariationNavigator @Inject constructor() {
                 val action = VariationDetailFragmentDirections.actionVariationDetailFragmentToProductInventoryFragment(
                     requestCode = RequestCodes.VARIATION_DETAIL_INVENTORY,
                     inventoryData = target.inventoryData,
-                    sku = target.sku
+                    sku = target.sku,
+                    productType = ProductType.SIMPLE
                 )
                 fragment.findNavController().navigateSafely(action)
             }

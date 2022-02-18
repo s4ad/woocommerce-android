@@ -62,7 +62,7 @@ class ProductSettingsFragment : BaseProductFragment(R.layout.fragment_product_se
             activity?.invalidateOptionsMenu()
         }
 
-        if (viewModel.getProduct().storedProduct?.productType == SIMPLE) {
+        if (viewModel.getProduct().storedProduct?.type == SIMPLE) {
             binding.productIsDownloadable.visibility = View.VISIBLE
             binding.productIsDownloadableDivider.visibility = View.VISIBLE
             binding.productIsDownloadable.setOnCheckedChangeListener { checkbox, isChecked ->

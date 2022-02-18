@@ -255,7 +255,6 @@
             app:argType="string" />
         <argument
             android:name="productType"
-            android:defaultValue="SIMPLE"
             app:argType="com.woocommerce.android.ui.products.ProductType" />
     </fragment>
     <fragment

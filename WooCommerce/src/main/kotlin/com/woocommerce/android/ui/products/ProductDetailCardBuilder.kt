@@ -72,13 +72,13 @@ class ProductDetailCardBuilder(
         val cards = mutableListOf<ProductPropertyCard>()
         cards.addIfNotEmpty(getPrimaryCard(product))
 
-        when (product.productType) {
+        when (product.type) {
             SIMPLE -> cards.addIfNotEmpty(getSimpleProductCard(product))
             VARIABLE -> cards.addIfNotEmpty(getVariableProductCard(product))
             GROUPED -> cards.addIfNotEmpty(getGroupedProductCard(product))
             EXTERNAL -> cards.addIfNotEmpty(getExternalProductCard(product))
             VIRTUAL -> cards.addIfNotEmpty(getOtherProductCard(product))
-            OTHER -> cards.addIfNotEmpty(getOtherProductCard(product))
+            is OTHER -> cards.addIfNotEmpty(getOtherProductCard(product))
         }
 
         return cards
@@ -315,7 +315,7 @@ class ProductDetailCardBuilder(
 
     // enable editing external product link
     private fun Product.externalLink(): ProductProperty? {
-        return if (this.productType == EXTERNAL) {
+        return if (this.type == EXTERNAL) {
             val hasExternalLink = this.externalUrl.isNotEmpty()
             val externalGroup = if (hasExternalLink) {
                 mapOf(Pair("", this.externalUrl))
@@ -377,7 +377,7 @@ class ProductDetailCardBuilder(
     }
 
     private fun Product.productTypeDisplayName(): String {
-        return when (productType) {
+        return when (type) {
             SIMPLE -> {
                 when {
                     this.isVirtual -> resources.getString(string.product_type_virtual)
@@ -389,7 +389,7 @@ class ProductDetailCardBuilder(
             VARIABLE -> resources.getString(string.product_type_variable)
             GROUPED -> resources.getString(string.product_type_grouped)
             EXTERNAL -> resources.getString(string.product_type_external)
-            OTHER -> this.type.capitalize() // show the actual product type string for unsupported products
+            is OTHER -> type.value.capitalize() // show the actual product type string for unsupported products
         }
     }
 
@@ -405,7 +405,7 @@ class ProductDetailCardBuilder(
             string.product_type,
             resources.getString(string.product_detail_product_type_hint, productTypeDisplayName()),
             drawable.ic_gridicons_product,
-            onClick = if (remoteId != 0L && productType != OTHER) onClickHandler else null
+            onClick = if (remoteId != 0L && type !is OTHER) onClickHandler else null
         )
     }
 

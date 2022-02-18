@@ -2,10 +2,7 @@ package com.woocommerce.android.ui.products
 
 import com.woocommerce.android.R.drawable
 import com.woocommerce.android.R.string
-import com.woocommerce.android.ui.products.ProductType.EXTERNAL
-import com.woocommerce.android.ui.products.ProductType.GROUPED
-import com.woocommerce.android.ui.products.ProductType.SIMPLE
-import com.woocommerce.android.ui.products.ProductType.VARIABLE
+import com.woocommerce.android.ui.products.ProductType.*
 import com.woocommerce.android.ui.products.ProductTypesBottomSheetViewModel.ProductTypesBottomSheetUiItem
 
 class ProductTypeBottomSheetBuilder {
@@ -18,7 +15,7 @@ class ProductTypeBottomSheetBuilder {
                 iconResource = drawable.ic_gridicons_product
             ),
             ProductTypesBottomSheetUiItem(
-                type = SIMPLE,
+                type = VIRTUAL,
                 titleResource = string.product_type_virtual_title,
                 descResource = string.product_type_virtual_desc,
                 iconResource = drawable.ic_gridicons_cloud_outline,

@@ -244,10 +244,9 @@ class ProductDetailViewModel @Inject constructor(
     private fun startAddNewProduct() {
         val preferredSavedType = prefs.getSelectedProductType()
         val defaultProductType = ProductType.fromString(preferredSavedType)
-        val isProductVirtual = prefs.isSelectedProductVirtual()
-        val defaultProduct = ProductHelper.getDefaultNewProduct(defaultProductType, isProductVirtual)
+        val defaultProduct = ProductHelper.getDefaultNewProduct(defaultProductType)
         viewState = viewState.copy(
-            productDraft = ProductHelper.getDefaultNewProduct(defaultProductType, isProductVirtual)
+            productDraft = ProductHelper.getDefaultNewProduct(defaultProductType)
         )
         updateProductState(defaultProduct)
     }
@@ -643,7 +642,7 @@ class ProductDetailViewModel @Inject constructor(
         viewState.productDraft
             ?.takeIf {
                 isProductStoredAtSite.not() and
-                    (it.type == VARIABLE.value) and
+                    (it.type == VARIABLE) and
                     (it.status == DRAFT)
             }
             ?.takeIf { addProduct(it).first }
@@ -723,7 +722,7 @@ class ProductDetailViewModel @Inject constructor(
         }
 
     private fun trackPublishing(it: Product) {
-        val properties = mapOf("product_type" to it.productType.value.toLowerCase(Locale.ROOT))
+        val properties = mapOf("product_type" to it.type.value.toLowerCase(Locale.ROOT))
         val statId = if (it.status == DRAFT) ADD_PRODUCT_SAVE_AS_DRAFT_TAPPED else ADD_PRODUCT_PUBLISH_TAPPED
         AnalyticsTracker.track(statId, properties)
     }
@@ -852,7 +851,7 @@ class ProductDetailViewModel @Inject constructor(
         menuOrder: Int? = null,
         categories: List<ProductCategory>? = null,
         tags: List<ProductTag>? = null,
-        type: String? = null,
+        type: ProductType? = null,
         groupedProductIds: List<Long>? = null,
         upsellProductIds: List<Long>? = null,
         crossSellProductIds: List<Long>? = null,
@@ -878,7 +877,6 @@ class ProductDetailViewModel @Inject constructor(
                 images = images ?: product.images,
                 regularPrice = regularPrice ?: product.regularPrice,
                 salePrice = salePrice ?: product.salePrice,
-                isVirtual = isVirtual ?: product.isVirtual,
                 taxStatus = taxStatus ?: product.taxStatus,
                 taxClass = taxClass ?: product.taxClass,
                 length = length ?: product.length,

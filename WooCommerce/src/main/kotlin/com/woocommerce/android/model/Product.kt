@@ -3,23 +3,15 @@ package com.woocommerce.android.model
 import android.os.Parcelable
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.woocommerce.android.extensions.areSameImagesAs
-import com.woocommerce.android.extensions.fastStripHtml
-import com.woocommerce.android.extensions.formatDateToISO8601Format
-import com.woocommerce.android.extensions.formatToString
-import com.woocommerce.android.extensions.formatToYYYYmmDDhhmmss
-import com.woocommerce.android.extensions.isEquivalentTo
-import com.woocommerce.android.extensions.isNotSet
-import com.woocommerce.android.ui.products.ProductBackorderStatus
-import com.woocommerce.android.ui.products.ProductStatus
-import com.woocommerce.android.ui.products.ProductStockStatus
-import com.woocommerce.android.ui.products.ProductTaxStatus
-import com.woocommerce.android.ui.products.ProductType
+import com.woocommerce.android.extensions.*
+import com.woocommerce.android.ui.products.*
+import com.woocommerce.android.ui.products.ProductType.*
 import com.woocommerce.android.ui.products.settings.ProductCatalogVisibility
 import kotlinx.parcelize.Parcelize
 import org.wordpress.android.fluxc.model.MediaModel
 import org.wordpress.android.fluxc.model.WCProductFileModel
 import org.wordpress.android.fluxc.model.WCProductModel
+import org.wordpress.android.fluxc.network.rest.wpcom.wc.product.CoreProductType
 import org.wordpress.android.util.DateTimeUtils
 import java.math.BigDecimal
 import java.util.Date
@@ -31,7 +23,7 @@ data class Product(
     val description: String,
     val shortDescription: String,
     val slug: String,
-    val type: String,
+    val type: ProductType,
     val status: ProductStatus?,
     val catalogVisibility: ProductCatalogVisibility?,
     val isFeatured: Boolean,
@@ -41,7 +33,6 @@ data class Product(
     val firstImageUrl: String?,
     val totalSales: Long,
     val reviewsAllowed: Boolean,
-    val isVirtual: Boolean,
     val ratingCount: Int,
     val averageRating: Float,
     val permalink: String,
@@ -150,7 +141,8 @@ data class Product(
                 length > 0 || width > 0 || height > 0 ||
                 shippingClass.isNotEmpty()
         }
-    val productType get() = ProductType.fromString(type)
+    val isVirtual: Boolean
+        get() = type == VIRTUAL
     val variationEnabledAttributes
         get() = attributes.filter { it.isVariation }
 
@@ -296,7 +288,6 @@ data class Product(
                 isSoldIndividually = updatedProduct.isSoldIndividually,
                 regularPrice = updatedProduct.regularPrice,
                 salePrice = updatedProduct.salePrice,
-                isVirtual = updatedProduct.isVirtual,
                 isSaleScheduled = updatedProduct.isSaleScheduled,
                 saleStartDateGmt = updatedProduct.saleStartDateGmt,
                 saleEndDateGmt = updatedProduct.saleEndDateGmt,
@@ -397,6 +388,15 @@ fun Product.toDataModel(storedProductModel: WCProductModel? = null): WCProductMo
         return jsonArray.toString()
     }
 
+    fun Product.coreProductValue() = when (type) {
+        EXTERNAL -> CoreProductType.EXTERNAL.value
+        GROUPED -> CoreProductType.GROUPED.value
+        is OTHER -> type.value
+        SIMPLE -> CoreProductType.SIMPLE.value
+        VARIABLE -> CoreProductType.VARIABLE.value
+        VIRTUAL -> CoreProductType.SIMPLE.value
+    }
+
     return (storedProductModel ?: WCProductModel()).also {
         it.remoteProductId = remoteId
         it.description = description
@@ -439,7 +439,7 @@ fun Product.toDataModel(storedProductModel: WCProductModel? = null): WCProductMo
         it.menuOrder = menuOrder
         it.categories = categoriesToJson()
         it.tags = tagsToJson()
-        it.type = type
+        it.type = coreProductValue()
         it.groupedProductIds = groupedProductIds.joinToString(
             separator = ",",
             prefix = "[",
@@ -470,7 +470,7 @@ fun WCProductModel.toAppModel(): Product {
         name = this.name,
         description = this.description,
         shortDescription = this.shortDescription,
-        type = this.type,
+        type = ProductType.fromCoreType(this.type, this.virtual),
         status = ProductStatus.fromString(this.status),
         catalogVisibility = ProductCatalogVisibility.fromString(this.catalogVisibility),
         isFeatured = this.featured,
@@ -480,7 +480,6 @@ fun WCProductModel.toAppModel(): Product {
         firstImageUrl = this.getFirstImageUrl(),
         totalSales = this.totalSales,
         reviewsAllowed = this.reviewsAllowed,
-        isVirtual = this.virtual,
         ratingCount = this.ratingCount,
         averageRating = this.averageRating.toFloatOrNull() ?: 0f,
         permalink = this.permalink,

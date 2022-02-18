@@ -41,7 +41,7 @@ class ProductDetailBottomSheetBuilder(
     )
 
     fun buildBottomSheetList(product: Product): List<ProductDetailBottomSheetUiItem> {
-        return when (product.productType) {
+        return when (product.type) {
             SIMPLE -> {
                 listOfNotNull(
                     product.getShipping(),
@@ -86,7 +86,7 @@ class ProductDetailBottomSheetBuilder(
                     product.getLinkedProducts()
                 )
             }
-            OTHER -> {
+            is OTHER -> {
                 listOfNotNull(
                     product.getCategories(),
                     product.getTags(),

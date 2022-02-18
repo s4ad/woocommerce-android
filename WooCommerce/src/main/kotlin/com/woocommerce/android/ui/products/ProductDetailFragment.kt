@@ -154,7 +154,7 @@ class ProductDetailFragment :
 
     private fun setupResultHandlers(viewModel: ProductDetailViewModel) {
         handleResult<ProductTypesBottomSheetUiItem>(ProductTypesBottomSheetFragment.KEY_PRODUCT_TYPE_RESULT) {
-            viewModel.updateProductDraft(type = it.type.value, isVirtual = it.isVirtual)
+            viewModel.updateProductDraft(type = it.type)
             changesMade()
         }
         handleResult<List<Long>>(GroupedProductListType.GROUPED.resultKey) {
@@ -306,7 +306,7 @@ class ProductDetailFragment :
         binding.productDetailAddMoreButton.setOnClickListener {
             // TODO: add tracking events here
             viewModel.onEditProductCardClicked(
-                ViewProductDetailBottomSheet(product.productType)
+                ViewProductDetailBottomSheet(product.type)
             )
         }
 

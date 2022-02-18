@@ -10,8 +10,6 @@ import com.woocommerce.android.model.ProductCategory
 import com.woocommerce.android.model.sortCategories
 import com.woocommerce.android.tools.NetworkStatus
 import com.woocommerce.android.ui.products.ProductStockStatus.Companion.fromString
-import com.woocommerce.android.ui.products.ProductType.OTHER
-import com.woocommerce.android.ui.products.ProductType.VIRTUAL
 import com.woocommerce.android.ui.products.categories.ProductCategoriesRepository
 import com.woocommerce.android.viewmodel.LiveDataDelegate
 import com.woocommerce.android.viewmodel.MultiLiveEvent.Event.Exit
@@ -24,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import org.wordpress.android.fluxc.network.rest.wpcom.wc.product.CoreProductStockStatus
+import org.wordpress.android.fluxc.network.rest.wpcom.wc.product.CoreProductType
 import org.wordpress.android.fluxc.store.WCProductStore.ProductFilterOption
 import org.wordpress.android.fluxc.store.WCProductStore.ProductFilterOption.CATEGORY
 import org.wordpress.android.fluxc.store.WCProductStore.ProductFilterOption.STATUS
@@ -282,10 +281,11 @@ class ProductFilterListViewModel @Inject constructor(
                 TYPE,
                 resourceProvider.getString(string.product_type),
                 addDefaultFilterOption(
-                    ProductType.values().filterNot { it == OTHER || it == VIRTUAL }.map {
+                    CoreProductType.values().map {
+                        val type = ProductType.fromCoreType(it.value, isVirtual = false)
                         FilterListOptionItemUiModel(
-                            resourceProvider.getString(it.stringResource),
-                            filterOptionItemValue = it.value,
+                            resourceProvider.getString(type.stringResource),
+                            filterOptionItemValue = type.value,
                             isSelected = productFilterOptions[TYPE] == it.value
                         )
                     }.toMutableList(),

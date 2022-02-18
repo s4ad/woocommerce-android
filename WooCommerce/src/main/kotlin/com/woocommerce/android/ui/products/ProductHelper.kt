@@ -33,13 +33,13 @@ object ProductHelper {
      * Default Product for initial state of Product Add flow
      * */
 
-    fun getDefaultNewProduct(productType: ProductType, isVirtual: Boolean): Product {
+    fun getDefaultNewProduct(productType: ProductType): Product {
         return Product(
             remoteId = 0L,
             name = "",
             description = "",
             shortDescription = "",
-            type = productType.value,
+            type = productType,
             status = if (productType == VARIABLE) DRAFT else PUBLISH,
             catalogVisibility = VISIBLE,
             isFeatured = false,
@@ -49,7 +49,6 @@ object ProductHelper {
             firstImageUrl = null,
             totalSales = 0,
             reviewsAllowed = true,
-            isVirtual = isVirtual,
             ratingCount = 0,
             averageRating = 0f,
             permalink = "",
