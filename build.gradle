@@ -36,6 +36,14 @@ allprojects {
         toolVersion = '8.3'
         configFile file("${project.rootDir}/config/checkstyle.xml")
     }
+
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin" && requested.module.name == "kotlin-compiler-embeddable") {
+                useVersion(gradle.ext.kotlinVersion)
+            }
+        }
+    }
 }
 
 subprojects {
