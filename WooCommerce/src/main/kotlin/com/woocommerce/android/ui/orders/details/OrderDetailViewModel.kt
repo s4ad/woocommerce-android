@@ -259,7 +259,12 @@ final class OrderDetailViewModel @Inject constructor(
 
     private fun loadReceiptUrl(): String? {
         return selectedSite.getIfExists()?.let {
-            appPrefs.getReceiptUrl(it.id, it.siteId, it.selfHostedSiteId, order.id)
+            order.metaData.find { metaData -> metaData.key == "receipt_url" }?.value ?: appPrefs.getReceiptUrl(
+                it.id,
+                it.siteId,
+                it.selfHostedSiteId,
+                order.id
+            )
         }
     }
 
