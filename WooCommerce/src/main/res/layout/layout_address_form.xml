@@ -123,7 +123,7 @@
             android:layout_marginHorizontal="@dimen/major_100"
             android:hint="@string/order_detail_edit_address_line1"
             android:imeOptions="flagNoFullscreen"
-            android:inputType="textPostalAddress"
+            android:inputType="textPostalAddress|textCapWords"
             android:nextFocusForward="@+id/address2"
             android:saveEnabled="false"
             app:errorEnabled="true" />
@@ -135,7 +135,7 @@
             android:layout_marginHorizontal="@dimen/major_100"
             android:hint="@string/order_detail_edit_address_line2"
             android:imeOptions="flagNoFullscreen"
-            android:inputType="textPostalAddress"
+            android:inputType="textPostalAddress|textCapWords"
             android:nextFocusForward="@+id/city"
             android:saveEnabled="false"
             app:errorEnabled="true" />
@@ -147,7 +147,7 @@
             android:layout_marginHorizontal="@dimen/major_100"
             android:hint="@string/order_detail_edit_address_city"
             android:imeOptions="flagNoFullscreen"
-            android:inputType="text"
+            android:inputType="text|textCapWords"
             android:nextFocusForward="@+id/postcode"
             android:saveEnabled="false"
             app:errorEnabled="true" />
